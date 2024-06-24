@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tıbbi Rapor Ekle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input, textarea, select {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .button-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .button-link:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tıbbi Rapor Ekle</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div>
+    <!-- Hasta alanı için gizli bir input alanı ekleyerek giriş yapmış olan hastayı atayalım -->
+    <input type="hidden" name="hasta" value="{{ request.user.hasta.id }}">
+</div>
+
+            <div>
+                <label for="{{ form.doktor.id_for_label }}">Doktor:</label>
+                {{ form.doktor.errors }}
+                {{ form.doktor }}
+            </div>
+            <div>
+                <label for="{{ form.rapor_tarihi.id_for_label }}">Rapor Tarihi:</label>
+                {{ form.rapor_tarihi.errors }}
+                {{ form.rapor_tarihi }}
+            </div>
+            <div>
+                <label for="{{ form.rapor_icerigi.id_for_label }}">Rapor İçeriği:</label>
+                {{ form.rapor_icerigi.errors }}
+                {{ form.rapor_icerigi }}
+            </div>
+            <div>
+                <label for="{{ form.rapor_gorseli.id_for_label }}">Rapor Görseli:</label>
+                {{ form.rapor_gorseli.errors }}
+                {{ form.rapor_gorseli }}
+            </div>
+
+            <button type="submit">Kaydet</button>
+        </form>
+    </div>
+</body>
+</html>

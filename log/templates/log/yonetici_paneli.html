@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yönetici Paneli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            text-decoration: none; /* Butonun altını çizmeyi kaldır */
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .button a {
+            color: #fff; /* Buton içindeki bağlantının rengini beyaz yap */
+            text-decoration: none; /* Bağlantı altı çizgisi kaldır */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Yönetici Paneli</h1>
+        <div class="button-container">
+            <button class="button"> <a href="{% url 'hasta_ekle' %}">Hasta Ekle</a></button>
+            <button class="button"> <a href="{% url 'hasta_liste' %}">Hasta Liste</a></button>
+            <button class="button"> <a href="{% url 'doktor_ekle' %}">Doktor Ekle</a></button>
+            <button class="button"> <a href="{% url 'doktor_liste' %}">Doktor Liste</a></button>
+            <button class="button"> <a href="{% url 'yonetici_tibbirapor_ekle' %}">Tıbbi Rapor Ekle</a></button>
+            <button class="button"> <a href="{% url 'yonetici_tibbirapor_liste' %}">Tıbbi Rapor Listele</a></button>
+        </div>
+    </div>
+</body>
+</html>

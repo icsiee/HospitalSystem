@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doktor Paneli</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        .info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            width: 200px;
+            margin: 0 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doktor Paneli</h1>
+        <div class="info">
+            <p>Hoş geldiniz, Dr. {{ doktor.ad }} {{ doktor.soyad }}</p>
+        </div>
+        <div class="btn-container">
+            <a href="{% url 'doktor_tibbirapor_ekle' %}" class="btn">Tıbbi Rapor Ekle</a>
+            <a href="{% url 'doktor_tibbirapor_liste' %}" class="btn">Tıbbi Rapor Listele</a>
+            <a href="{% url 'doktor_hasta_listesi' %}" class="btn">Hastalarım</a>
+
+</body>
+</html>

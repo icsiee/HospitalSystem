@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasta Listesi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .delete-button, .edit-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .edit-button {
+            background-color: #007bff;
+        }
+        .rapor-listesi {
+            display: none;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hasta Listesi</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ad</th>
+                <th>Soyad</th>
+                <th>Doğum Tarihi</th>
+                <th>Cinsiyet</th>
+                <th>Telefon</th>
+                <th>Adres</th>
+                <th>Raporlar</th>
+                <th></th> <!-- Silme düğmesi için boş bir hücre ekle -->
+                <th></th> <!-- Düzenleme düğmesi için boş bir hücre ekle -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for hasta in hastalar %}
+            <tr>
+                <td>{{ hasta.id }}</td>
+                <td>{{ hasta.ad }}</td>
+                <td>{{ hasta.soyad }}</td>
+                <td>{{ hasta.dogum_tarihi }}</td>
+                <td>{{ hasta.cinsiyet }}</td>
+                <td>{{ hasta.telefon }}</td>
+                <td>{{ hasta.adres }}</td>
+                <td><button class="rapor-goster-button" data-hasta-id="{{ hasta.id }}">Raporları Göster</button></td>
+                <td><button class="delete-button" data-hasta-id="{{ hasta.id }}">Sil</button></td>
+                <td><button class="edit-button" data-hasta-id="{{ hasta.id }}">Düzenle</button></td>
+            </tr>
+            <tr class="rapor-listesi" id="rapor-listesi-{{ hasta.id }}">
+                <td colspan="10">Yükleniyor...</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Düzenleme Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Hasta Bilgilerini Düzenle</h2>
+            <form id="editForm">
+                <input type="hidden" id="hastaId">
+                <label for="ad">Ad:</label>
+                <input type="text" id="ad" name="ad" required><br><br>
+                <label for="soyad">Soyad:</label>
+                <input type="text" id="soyad" name="soyad" required><br><br>
+                <label for="cinsiyet">Cinsiyet:</label>
+                <select id="cinsiyet" name="cinsiyet" required>
+                    <option value="Erkek">Erkek</option>
+                    <option value="Kadın">Kadın</option>
+                </select><br><br>
+                <label for="telefon">Telefon:</label>
+                <input type="text" id="telefon" name="telefon" required><br><br>
+                <label for="adres">Adres:</label>
+                <input type="text" id="adres" name="adres" required><br><br>
+                <button type="submit">Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".delete-button").click(function(){
+                var hastaId = $(this).data('hasta-id');
+                if (confirm("Hastayı silmek istediğinizden emin misiniz?")) {
+                    $.ajax({
+                        url: '/hasta_sil/' + hastaId + '/',
+                        method: 'POST',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                        },
+                        success: function(response){
+                            alert(response.message);
+                            window.location.reload();
+                        },
+                        error: function(xhr, status, error){
+                            alert("Hasta silinirken bir hata oluştu!");
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            $(".rapor-goster-button").click(function(){
+                var hastaId = $(this).data('hasta-id');
+                var raporListesi = $("#rapor-listesi-" + hastaId);
+
+                if (raporListesi.is(":visible")) {
+                    raporListesi.hide();
+                    return;
+                }
+
+                $.ajax({
+                    url: '/hasta_raporlar/' + hastaId + '/',
+                    method: 'GET',
+                    success: function(response){
+                        var raporHtml = '<td colspan="10">';
+                        if (response.raporlar.length > 0) {
+                            raporHtml += '<ul>';
+                            $.each(response.raporlar, function(index, rapor) {
+                                raporHtml += '<li>Rapor ID: ' + rapor.id + ', Tarih: ' + rapor.rapor_tarihi + ', İçerik: ' + rapor.rapor_icerigi + '</li>';
+                            });
+                            raporHtml += '</ul>';
+                        } else {
+                            raporHtml += 'Bu hasta için tıbbi rapor bulunmamaktadır.';
+                        }
+                        raporHtml += '</td>';
+                        raporListesi.html(raporHtml);
+                        raporListesi.show();
+                    },
+                    error: function(xhr, status, error){
+                        alert("Raporlar yüklenirken bir hata oluştu!");
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+            $(".edit-button").click(function(){
+                var hastaId = $(this).data('hasta-id');
+                $.ajax({
+                    url: '/hasta_bilgileri/' + hastaId + '/',
+                    method: 'GET',
+                    success: function(response){
+                        $("#hastaId").val(response.id);
+                        $("#ad").val(response.ad);
+                        $("#soyad").val(response.soyad);
+                        $("#cinsiyet").val(response.cinsiyet);
+                        $("#telefon").val(response.telefon);
+                        $("#adres").val(response.adres);
+                        modal.style.display = "block";
+                    },
+                    error: function(xhr, status, error){
+                        alert("Hasta bilgileri yüklenirken bir hata oluştu!");
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+            var modal = document.getElementById("editModal");
+            var span = document.getElementsByClassName("close")[0];
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            $("#editForm").submit(function(event){
+                event.preventDefault();
+                var hastaId = $("#hastaId").val();
+                var data = {
+                    ad: $("#ad").val(),
+                    soyad: $("#soyad").val(),
+                    cinsiyet: $("#cinsiyet").val(),
+                    telefon: $("#telefon").val(),
+                    adres: $("#adres").val()
+                };
+                $.ajax({
+                    url: '/hasta_guncelle/' + hastaId + '/',
+                    method: 'POST',
+                    data: data,
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function(response){
+                        if (response.success) {
+                            alert(response.message);
+                        } else {
+                            alert("Hata: " + response.message);
+                        }
+                        modal.style.display = "none";
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error){
+                        alert("Hasta bilgileri güncellenirken bir hata oluştu!");
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

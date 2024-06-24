@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doktor Listesi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Doktor Listesi</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ad</th>
+                <th>Soyad</th>
+                <th>Uzmanlık Alanı</th>
+                <th>Çalıştığı Hastane</th>
+                <th></th> <!-- Silme düğmesi için boş bir hücre ekle -->
+                <th></th> <!-- Düzenleme bağlantısı için boş bir hücre ekle -->
+            </tr>
+        </thead>
+        <tbody>
+           {% for doktor in doktorlar %}
+            <tr>
+                <td>{{ doktor.id }}</td>
+                <td>{{ doktor.ad }}</td>
+                <td>{{ doktor.soyad }}</td>
+                <td>{{ doktor.uzmanlik_alani }}</td>
+                <td>{{ doktor.calistigi_hastane }}</td>
+                <td><button class="delete-button" data-doktor-id="{{ doktor.id }}">Sil</button></td>
+                <td><a href="{% url 'doktor_duzenle' doktor.id %}">Düzenle</a></td>
+            </tr>
+           {% endfor %}
+        </tbody>
+    </table>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".delete-button").click(function(){
+            var doktorId = $(this).data('doktor-id');
+            if (confirm("Doktoru silmek istediğinizden emin misiniz?")) {
+                $.ajax({
+                    url: '/doktor_sil/' + doktorId + '/',
+                    method: 'POST',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function(response){
+                        alert(response);
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error){
+                        alert("Doktor silinirken bir hata oluştu! Doktora tanımlanmış randevu var!");
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randevu Listesi</title>
+    <style>
+        /* CSS stil tanımları */
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .delete-button {
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .delete-button:hover {
+            background-color: #d43f3a;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Randevu Listesi</h2>
+
+        {% if randevular %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Doktor</th>
+                        <th>Tarih</th>
+                        <th>Saat</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for randevu in randevular %}
+                        <tr>
+                            <td>{{ randevu.doktor.ad }} {{ randevu.doktor.soyad }}</td>
+                            <td>{{ randevu.randevu_tarihi }}</td>
+                            <td>{{ randevu.randevu_saati }}</td>
+<td><button class="delete-button" data-randevu-id="{{ randevu.id }}">İptal et</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Henüz randevunuz bulunmamaktadır.</p>
+        {% endif %}
+    </div>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".delete-button").click(function(){
+            var randevuId = $(this).data('randevu-id');
+            if (confirm("Randevuyu silmek istediğinizden emin misiniz?")) {
+                $.ajax({
+                    url: '/randevu_sil/' + randevuId + '/',
+                    method: 'POST',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function(response){
+                        alert(response);
+                        window.location.reload();
+                    },
+                    error: function(xhr, status, error){
+                        alert("Randevu silinirken bir hata oluştu!");
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+</html>

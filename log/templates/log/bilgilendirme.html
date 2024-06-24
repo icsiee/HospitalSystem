@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasta Bilgilendirme</title>
+    <style>
+        /* CSS stil tanımları */
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .info-box {
+            background-color: #f2f2f2;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+        }
+
+        .delete-button {
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .delete-button:hover {
+            background-color: #d43f3a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Hasta Bilgilendirme</h2>
+
+        <!-- Gelecek Randevular Bilgilendirme -->
+        <div class="info-box">
+            <h3>Gelecek Randevular</h3>
+            {% if gelecek_randevular %}
+                {% for randevu in gelecek_randevular %}
+                    <div class="info-item">
+                        <strong>Doktor:</strong> {{ randevu.doktor.ad }} {{ randevu.doktor.soyad }}<br>
+                        <strong>Tarih:</strong> {{ randevu.randevu_tarihi }}<br>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Gelecek randevunuz bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+
+        <!-- Geçmiş Randevular Bilgilendirme -->
+        <div class="info-box">
+            <h3>Geçmiş Randevular</h3>
+            {% if gecmis_randevular %}
+                {% for randevu in gecmis_randevular %}
+                    <div class="info-item">
+                        <strong>Doktor:</strong> {{ randevu.doktor.ad }} {{ randevu.doktor.soyad }}<br>
+                        <strong>Tarih:</strong> {{ randevu.randevu_tarihi }}<br>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Geçmiş randevunuz bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+
+        <!-- Tıbbi Raporlar Bilgilendirme -->
+        <div class="info-box">
+            <h3>Tıbbi Raporlar</h3>
+            {% if tum_raporlar %}
+                {% for rapor in tum_raporlar %}
+                    <div class="info-item">
+                        <strong>Doktor:</strong> {{ rapor.doktor.ad }} {{ rapor.doktor.soyad }}<br>
+                        <strong>Tarih:</strong> {{ rapor.rapor_tarihi }}<br>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Herhangi bir tıbbi raporunuz bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

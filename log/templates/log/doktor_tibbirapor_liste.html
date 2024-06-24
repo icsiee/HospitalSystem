@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hasta Tıbbi Rapor Listesi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 12px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .rapor-gorseli img {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-edit {
+            background-color: #28a745;
+        }
+
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tıbbi Rapor Listesi</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rapor ID</th>
+                    <th>Hasta</th>
+                    <th>Doktor</th>
+                    <th>Rapor Tarihi</th>
+                    <th>Rapor İçeriği</th>
+                    <th>Rapor Görseli</th>
+                    <th>JSON Görüntüle</th>
+                    <th>JSON İndir</th>
+                    <th>Düzenle</th>
+                    <th>Sil</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rapor in raporlar %}
+                <tr>
+                    <td>{{ rapor.id }}</td>
+                    <td>{{ rapor.hasta }}</td>
+                    <td>{{ rapor.doktor }}</td>
+                    <td>{{ rapor.rapor_tarihi }}</td>
+                    <td>{{ rapor.rapor_icerigi }}</td>
+                    <td class="rapor-gorseli">
+                        {% if rapor.rapor_gorseli %}
+                        <a href="{{ rapor.rapor_gorseli.url }}" target="_blank">
+                            <img src="{{ rapor.rapor_gorseli.url }}" alt="Rapor Görseli">
+                        </a>
+                        {% else %}
+                        Görsel Yok
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'doktor_tibbirapor_json_goruntule' rapor.id %}" target="_blank">JSON Görüntüle</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'doktor_tibbirapor_indir' rapor.id %}" class="btn">İndir</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'doktor_tibbirapor_duzenle' rapor.id %}" class="btn btn-edit">Düzenle</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'doktor_tibbirapor_sil' rapor.id %}" class="btn btn-danger">Sil</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>
